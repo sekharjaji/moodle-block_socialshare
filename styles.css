@@ -1,0 +1,14 @@
+.block_socialshare li{
+    list-style:none;
+    margin-top: 10px;
+}
+
+.block_socialshare ul{
+    margin-left: 0px;
+}
+
+.block_socialshare .horizontal li{
+    list-style:none;
+    display:inline;
+}
+
