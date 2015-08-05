@@ -44,5 +44,34 @@ class block_socialshare_edit_form extends block_edit_form {
         $mform->addElement('advcheckbox', 'config_enablegoogleplus', get_string('enablegoogleplus', 'block_socialshare'));
         $mform->setDefault('config_enablegoogleplus', true);
         $mform->setType('config_enablegoogleplus', PARAM_BOOL);
+
+        $options = $this->get_url_scope_options();
+        $mform->addElement('select', 'config_urlscope', get_string('urlscope', 'block_socialshare'), $options);
     }
+
+    /**
+     * Gets configuration options for url scope
+     *
+     * @return array
+     * @throws Exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    private function get_url_scope_options() {
+        $options = array(1 => get_string('currentpage', 'block_socialshare'));
+        $pagecontext = $this->page->context;
+        $coursecontext = $pagecontext->get_course_context(IGNORE_MISSING);
+        if (has_capability('block/socialshare:manageurl', context_system::instance())) {
+            // Most probabily an admin.
+            $options[2] = get_string('currentroot', 'block_socialshare');
+        }
+        if ($coursecontext && has_capability('block/socialshare:manageurl', $coursecontext)) {
+            $options[3] = get_string('currentcourse', 'block_socialshare');
+        }
+        if ($pagecontext->contextlevel == CONTEXT_MODULE && has_capability('block/socialshare:manageurl', $pagecontext)) {
+            $options[4] = get_string('currentmodule', 'block_socialshare', $pagecontext->get_context_name(false));
+        }
+        return $options;
+    }
+
 }

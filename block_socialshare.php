@@ -39,9 +39,19 @@ class block_socialshare extends block_base {
      */
     public function get_content() {
 
-        $enablefacebook = $this->config->enablefacebook;
-        $enabletwitter = $this->config->enabletwitter;
-        $enablegoogleplus = $this->config->enablegoogleplus;
+        $enablefacebook = false;
+        $enabletwitter = false;
+        $enablegoogleplus = false;
+
+        if (!empty($this->config->enablefacebook)) {
+            $enablefacebook = $this->config->enablefacebook;
+        }
+        if (!empty($this->config->enabletwitter)) {
+            $enabletwitter = $this->config->enabletwitter;
+        }
+        if (!empty($this->config->enablegoogleplus)) {
+            $enablegoogleplus = $this->config->enablegoogleplus;
+        }
 
         if ($this->content != null) {
             return $this->content;
@@ -145,15 +155,15 @@ class block_socialshare extends block_base {
     }
 
     /**
-     * Returns url to set for social buttons
+     * Returns url to set for social buttons based on the url scope configuration
      *
      * @return moodle_url|string
      */
     public function get_url() {
         global $CFG;
 
-        if (!empty($this->config->urltype)) {
-            switch ($this->config->urltype) {
+        if (!empty($this->config->urlscope)) {
+            switch ($this->config->urlscope) {
                 case 4 : $url = $this->get_mod_url();
                     break;
                 case 3 : $url = $this->get_course_url();

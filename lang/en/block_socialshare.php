@@ -34,3 +34,10 @@ $string['enablegoogleplus'] = 'Allow Google+ sharing';
 $string['layout_horizontal'] = 'Horizontal';
 $string['layout_vertical'] = 'Vertical';
 $string['layout'] = 'Layout';
+
+$string['urlscope'] = 'Sharing scope';
+$string['currentpage'] = 'Share current page';
+$string['currentroot'] = 'Share root site';
+$string['currentcourse'] = 'Share current course';
+$string['currentmodule'] = 'Share current module';
+
