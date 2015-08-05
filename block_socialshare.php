@@ -1,56 +1,95 @@
 <?php
+// This file is part of SocialShare - https://github.com/sekharjaji/moodle-block_socialshare
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * socialshare block class.
+ * SocialShare block class.
  *
  * @package   block_socialshare
  * @copyright 2015 onwards Sekhar Jajimoggala
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class block_socialshare extends block_base {
+
+    /**
+     * Initializes the block
+     * Sets up the block title
+     */
     public function init() {
         $this->title = get_string('socialshare', 'block_socialshare');
     }
 
-    public function get_content(){
+    /**
+     * Checks 3 configurations - enablefacebook, enabletwitter and enablegoogleplus
+     * And accordingly generate the scripts and html required to display the social buttons
+     *
+     * @return stdObject Content object to render
+     */
+    public function get_content() {
 
-        $enableFacebook = $this->config->enablefacebook;
-        $enableTwitter = $this->config->enabletwitter;
-        $enableGooglePlus = $this->config->enablegoogleplus;
+        $enablefacebook = $this->config->enablefacebook;
+        $enabletwitter = $this->config->enabletwitter;
+        $enablegoogleplus = $this->config->enablegoogleplus;
 
-        if ($this->content != null){
+        if ($this->content != null) {
             return $this->content;
         }
 
         $url = $this->get_url();
 
-        if ((!$enableFacebook) && (!$enableTwitter) && (!$enableGooglePlus)){
+        if ((!$enablefacebook) && (!$enabletwitter) && (!$enablegoogleplus)) {
             $this->content = null;
             return '';
         }
 
-        $this->init_js_code($enableFacebook, $enableTwitter, $enableGooglePlus);
+        $this->init_js_code($enablefacebook, $enabletwitter);
 
         $this->content = new stdClass();
-        if ($enableFacebook){
-            $facebook_like = $this->get_facebook_like($url);
+        if ($enablefacebook) {
+            $facebooklike = $this->get_facebook_like($url);
         }
-        if ($enableTwitter){
-            $twitter_share = $this->get_twitter_share($url);
+        if ($enabletwitter) {
+            $twittershare = $this->get_twitter_share($url);
         }
-        if ($enableGooglePlus){
-            $googleplus_share = $this->get_googleplus_share($url);
+        if ($enablegoogleplus) {
+            $googleplusshare = $this->get_googleplus_share($url);
         }
 
-        $this->content->text = '<ul class="vertical"><li id="facebook-like">'.$facebook_like.'</li><li id="twitter-share">'.$twitter_share.'</li><li id="googleplus-share">'.$googleplus_share.'</li></ul>';
+        $this->content->text = '<ul class="vertical"><li id="facebook-like">'.
+                                $facebooklike.'</li><li id="twitter-share">'.
+                                $twittershare.'</li><li id="googleplus-share">'.
+                                $googleplusshare.'</li></ul>';
     }
 
+    /**
+     * Do not allow multiple instances
+     *
+     * @return bool
+     */
     public function instance_allow_multiple() {
         return false;
     }
 
-    private function init_js_code($enableFacebook, $enableTwitter, $enableGooglePlus){
-        if ($enableFacebook){
+    /**
+     * Generate scripts required for facebook and twitter buttons
+     *
+     * @param $enablefacebook
+     * @param $enabletwitter
+     */
+    private function init_js_code($enablefacebook, $enabletwitter) {
+        if ($enablefacebook) {
             $this->page->requires->js_init_code('(function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) return;
@@ -59,7 +98,7 @@ class block_socialshare extends block_base {
             fjs.parentNode.insertBefore(js, fjs);
             }(document, "script", "facebook-jssdk"));');
         }
-        if ($enableTwitter){
+        if ($enabletwitter) {
             $this->page->requires->js_init_code("!function(d,s,id){
                 var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
                 if(!d.getElementById(id)){
@@ -72,19 +111,45 @@ class block_socialshare extends block_base {
         }
     }
 
-    private function get_facebook_like($url){
-        return '<div id="fb-root"></div><div class="fb-like" data-href="'.$url.'" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" data-width="30"></div>';
+    /**
+     * Generates html for facebook button
+     *
+     * @param $url
+     * @return string
+     */
+    private function get_facebook_like($url) {
+        return '<div id="fb-root"></div><div class="fb-like" data-href="'.
+                $url.'" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" data-width="30">'.
+                '</div>';
     }
 
-    private function get_twitter_share($url){
+    /**
+     * Generates html for twitter button
+     *
+     * @param $url
+     * @return string
+     */
+    private function get_twitter_share($url) {
         return '<a href="https://twitter.com/share" class="twitter-share-button" data-url="'.$url.'">Tweet</a>';
     }
 
-    private function get_googleplus_share($url){
-        return '<script src="https://apis.google.com/js/platform.js" async defer></script><div class="g-plus" data-action="share" data-annotation="bubble" data-height="24" data-href="'.$url.'"></div>';
+    /**
+     * Generates html for googleplus button
+     *
+     * @param $url
+     * @return string
+     */
+    private function get_googleplus_share($url) {
+        return '<script src="https://apis.google.com/js/platform.js" async defer></script>'.
+                '<div class="g-plus" data-action="share" data-annotation="bubble" data-height="24" data-href="'.$url.'"></div>';
     }
 
-    public function get_url(){
+    /**
+     * Returns url to set for social buttons
+     *
+     * @return moodle_url|string
+     */
+    public function get_url() {
         global $CFG;
 
         if (!empty($this->config->urltype)) {
