@@ -1,7 +1,7 @@
 SocialShare
 =====================
 
-Facebook like, Twitter Share and Google Share for Moodle
+Facebook like, Twitter Share, Google Share and StumbleUpon Share for Moodle
 
 Installation Instruction
 =====================
@@ -31,10 +31,12 @@ Features
 * Facebook like and share box.
 * Tweet box.
 * Google plus share box.
+* StumbleUpon share box
 
 Change log
 =====================
 * 2015080111 - First beta release - 1.0
+* 2015080601 - Second beta release - 1.1
 
 About Author
 =====================

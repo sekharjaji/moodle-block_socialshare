@@ -32,7 +32,7 @@ class block_socialshare extends block_base {
     }
 
     /**
-     * Checks 3 configurations - enablefacebook, enabletwitter and enablegoogleplus
+     * Checks 3 configurations - enablefacebook, enabletwitter, enablegoogleplus and enablestumbleupon
      * And accordingly generate the scripts and html required to display the social buttons
      *
      * @return stdObject Content object to render
@@ -42,6 +42,7 @@ class block_socialshare extends block_base {
         $enablefacebook = false;
         $enabletwitter = false;
         $enablegoogleplus = false;
+        $enablestumbleupon = false;
 
         if (!empty($this->config->enablefacebook)) {
             $enablefacebook = $this->config->enablefacebook;
@@ -52,6 +53,9 @@ class block_socialshare extends block_base {
         if (!empty($this->config->enablegoogleplus)) {
             $enablegoogleplus = $this->config->enablegoogleplus;
         }
+        if (!empty($this->config->enablestumbleupon)) {
+            $enablestumbleupon = $this->config->enablestumbleupon;
+        }
 
         if ($this->content != null) {
             return $this->content;
@@ -59,12 +63,12 @@ class block_socialshare extends block_base {
 
         $url = $this->get_url();
 
-        if ((!$enablefacebook) && (!$enabletwitter) && (!$enablegoogleplus)) {
+        if ((!$enablefacebook) && (!$enabletwitter) && (!$enablegoogleplus) && (!$enablestumbleupon)) {
             $this->content = null;
             return '';
         }
 
-        $this->init_js_code($enablefacebook, $enabletwitter);
+        $this->init_js_code($enablefacebook, $enabletwitter, $enablestumbleupon);
 
         $this->content = new stdClass();
         if ($enablefacebook) {
@@ -76,11 +80,15 @@ class block_socialshare extends block_base {
         if ($enablegoogleplus) {
             $googleplusshare = $this->get_googleplus_share($url);
         }
+        if ($enablestumbleupon) {
+            $stumbleuponshare = $this->get_stumbleupon_share($url);
+        }
 
         $this->content->text = '<ul class="vertical"><li id="facebook-like">'.
                                 $facebooklike.'</li><li id="twitter-share">'.
                                 $twittershare.'</li><li id="googleplus-share">'.
-                                $googleplusshare.'</li></ul>';
+                                $googleplusshare.'</li><li id="stumbleupon-share">'.
+                                $stumbleuponshare.'</li></ul>';
     }
 
     /**
@@ -97,8 +105,9 @@ class block_socialshare extends block_base {
      *
      * @param $enablefacebook
      * @param $enabletwitter
+     * @param $enablestumbleupon
      */
-    private function init_js_code($enablefacebook, $enabletwitter) {
+    private function init_js_code($enablefacebook, $enabletwitter, $enablestumbleupon) {
         if ($enablefacebook) {
             $this->page->requires->js_init_code('(function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -118,6 +127,16 @@ class block_socialshare extends block_base {
                     fjs.parentNode.insertBefore(js,fjs);
                 }
             }(document, 'script', 'twitter-wjs');");
+        }
+        if ($enablestumbleupon) {
+            $this->page->requires->js_init_code("(function() {
+                var li = document.createElement('script');
+                li.type = 'text/javascript';
+                li.async = true;
+                li.src = ('https:' == document.location.protocol ? 'https:' : 'http:') + '//platform.stumbleupon.com/1/widgets.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(li, s);
+            })();");
         }
     }
 
@@ -152,6 +171,16 @@ class block_socialshare extends block_base {
     private function get_googleplus_share($url) {
         return '<script src="https://apis.google.com/js/platform.js" async defer></script>'.
                 '<div class="g-plus" data-action="share" data-annotation="bubble" data-height="24" data-href="'.$url.'"></div>';
+    }
+
+    /**
+     * Generates html for stumbleupon button
+     *
+     * @param $url
+     * @return string
+     */
+    private function get_stumbleupon_share($url) {
+        return '<su:badge layout="2" location="'.$url.'"></su:badge>';
     }
 
     /**

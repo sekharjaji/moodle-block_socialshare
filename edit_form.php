@@ -45,6 +45,10 @@ class block_socialshare_edit_form extends block_edit_form {
         $mform->setDefault('config_enablegoogleplus', true);
         $mform->setType('config_enablegoogleplus', PARAM_BOOL);
 
+        $mform->addElement('advcheckbox', 'config_enablestumbleupon', get_string('enablestumbleupon', 'block_socialshare'));
+        $mform->setDefault('config_enablestumbleupon', true);
+        $mform->setType('config_enablestumbleupon', PARAM_BOOL);
+
         $options = $this->get_url_scope_options();
         $mform->addElement('select', 'config_urlscope', get_string('urlscope', 'block_socialshare'), $options);
     }

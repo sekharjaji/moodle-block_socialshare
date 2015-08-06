@@ -30,6 +30,7 @@ $string['socialshare:myaddinstance'] = 'Add Social Share block to the My Moodle 
 $string['enablefacebook'] = 'Allow Facebook sharing';
 $string['enabletwitter'] = 'Allow Twitter sharing';
 $string['enablegoogleplus'] = 'Allow Google+ sharing';
+$string['enablestumbleupon'] = 'Allow StumbleUpon sharing';
 
 $string['layout_horizontal'] = 'Horizontal';
 $string['layout_vertical'] = 'Vertical';
